@@ -1,17 +1,20 @@
+<!DOCTYPE html>
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="kočičí,válečníci,warriors,cats">
     <title>Warriors cats</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
+    <script src="script.js" defer type="module"></script>
 </head>
-<h1>Překlady Kočičích Válečníků</h1>
+<body>
+    <h1>Překlady Kočičích Válečníků</h1>
 
     <!-- Přidávání nových jmen -->
     <input type="text" id="newEnglish" placeholder="Anglické jméno">
     <input type="text" id="newCzech" placeholder="České jméno">
-    <button onclick="addName()">Přidat</button>
+    <button id="addNameBtn">Přidat</button>
 
     <!-- Tabulka s jmény -->
     <table>
@@ -23,30 +26,29 @@
         </thead>
         <tbody id="nameList"></tbody>
     </table>
-<body>
-  <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyACgG8xZvMHWFJPlo-WJwyMKDOhD4NRZQI",
-    authDomain: "warriors-cats-cz.firebaseapp.com",
-    projectId: "warriors-cats-cz",
-    storageBucket: "warriors-cats-cz.firebasestorage.app",
-    messagingSenderId: "103962692564",
-    appId: "1:103962692564:web:e72bb5d2a2309a90182441",
-    measurementId: "G-6X0J9J8PKC"
-  };
+    <script type="module">
+        // ✅ Import Firebase funkcí
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-      async function loadNames() {
+        // ✅ Firebase konfigurace
+        const firebaseConfig = {
+            apiKey: "AIzaSyACgG8xZvMHWFJPlo-WJwyMKDOhD4NRZQI",
+            authDomain: "warriors-cats-cz.firebaseapp.com",
+            projectId: "warriors-cats-cz",
+            storageBucket: "warriors-cats-cz.appspot.com",
+            messagingSenderId: "103962692564",
+            appId: "1:103962692564:web:e72bb5d2a2309a90182441",
+            measurementId: "G-6X0J9J8PKC"
+        };
+
+        // ✅ Inicializace Firebase a Firestore
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // ✅ Funkce pro načtení jmen z Firestore
+        async function loadNames() {
             const querySnapshot = await getDocs(collection(db, "warriorNames"));
             const names = [];
             querySnapshot.forEach(doc => {
@@ -85,9 +87,13 @@
             loadNames(); // Znovu načti jména po přidání
         }
 
+        // ✅ Připojení tlačítka k funkci
+        document.getElementById("addNameBtn").addEventListener("click", addName);
+
         // ✅ Načti jména při otevření stránky
         window.onload = () => {
             loadNames();
         };
-</script>
+    </script>
 </body>
+</html>
