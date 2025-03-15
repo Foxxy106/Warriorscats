@@ -30,15 +30,22 @@ const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 const auth = getAuth(app)
 const provider = new GoogleAuthProvider()
-
-// ✅ Funkce pro přihlášení přes Google
-async function login() {
-  try {
-    await signInWithPopup(auth, provider)
-  } catch (error) {
-    console.error("Chyba při přihlášení:", error)
-  }
+// 🟢 Přihlášení přes Google
+async function signIn() {
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        console.log("✅ Přihlášení úspěšné:", user.displayName);
+        alert(`Přihlášen jako: ${user.displayName}`);
+    } catch (error) {
+        console.error("❌ Chyba při přihlášení:", error);
+        alert(`Chyba při přihlášení: ${error.message}`);
+    }
 }
+
+// 🟢 Připojení tlačítka k funkci
+document.getElementById("loginBtn").addEventListener("click", signIn);
+
 
 // ✅ Funkce pro odhlášení
 async function logout() {
