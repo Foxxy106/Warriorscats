@@ -1,67 +1,125 @@
+// ✅ Import Firebase funkcí
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js"
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  addDoc,
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js"
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js"
 
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+// ✅ Firebase konfigurace
+const firebaseConfig = {
+  apiKey: "AIzaSyACgG8xZvMHWFJPlo-WJwyMKDOhD4NRZQI",
+  authDomain: "warriors-cats-cz.firebaseapp.com",
+  projectId: "warriors-cats-cz",
+  storageBucket: "warriors-cats-cz.appspot.com",
+  messagingSenderId: "103962692564",
+  appId: "1:103962692564:web:e72bb5d2a2309a90182441",
+  measurementId: "G-6X0J9J8PKC",
+}
 
-        // ✅ Firebase konfigurace
-        const firebaseConfig = {
-            apiKey: "AIzaSyACgG8xZvMHWFJPlo-WJwyMKDOhD4NRZQI",
-            authDomain: "warriors-cats-cz.firebaseapp.com",
-            projectId: "warriors-cats-cz",
-            storageBucket: "warriors-cats-cz.appspot.com",
-            messagingSenderId: "103962692564",
-            appId: "1:103962692564:web:e72bb5d2a2309a90182441",
-            measurementId: "G-6X0J9J8PKC"
-        };
+// ✅ Inicializace Firebase
+const app = initializeApp(firebaseConfig)
+const db = getFirestore(app)
+const auth = getAuth(app)
+const provider = new GoogleAuthProvider()
 
-        // ✅ Inicializace Firebase a Firestore
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+// ✅ Funkce pro přihlášení přes Google
+async function login() {
+  try {
+    await signInWithPopup(auth, provider)
+  } catch (error) {
+    console.error("Chyba při přihlášení:", error)
+  }
+}
 
-        // ✅ Funkce pro načtení jmen z Firestore
-        async function loadNames() {
-            const querySnapshot = await getDocs(collection(db, "warriorNames"));
-            const names = [];
-            querySnapshot.forEach(doc => {
-                names.push(doc.data());
-            });
-            displayNames(names);
-        }
+// ✅ Funkce pro odhlášení
+async function logout() {
+  try {
+    await signOut(auth)
+  } catch (error) {
+    console.error("Chyba při odhlášení:", error)
+  }
+}
 
-        // ✅ Funkce pro zobrazení jmen v tabulce
-        function displayNames(names) {
-            const table = document.getElementById("nameList");
-            table.innerHTML = "";
-            names.forEach(cat => {
-                table.innerHTML += `<tr><td>${cat.english}</td><td>${cat.czech}</td></tr>`;
-            });
-        }
+// ✅ Kontrola, zda je uživatel přihlášen
+onAuthStateChanged(auth, (user) => {
+  const loginBtn = document.getElementById("loginBtn")
+  const logoutBtn = document.getElementById("logoutBtn")
+  const addNameBtn = document.getElementById("addNameBtn")
 
-        // ✅ Funkce pro přidání nového jména do Firestore
-        async function addName() {
-            const englishName = document.getElementById("newEnglish").value.trim();
-            const czechName = document.getElementById("newCzech").value.trim();
+  if (user) {
+    console.log("Přihlášený uživatel:", user.displayName)
+    loginBtn.style.display = "none"
+    logoutBtn.style.display = "inline-block"
+    addNameBtn.disabled = false // Povolit přidávání jmen
+  } else {
+    console.log("Nikdo není přihlášen")
+    loginBtn.style.display = "inline-block"
+    logoutBtn.style.display = "none"
+    addNameBtn.disabled = true // Zakázat přidávání jmen
+  }
+})
 
-            if (englishName === "" || czechName === "") {
-                alert("Vyplň obě jména!");
-                return;
-            }
+// ✅ Funkce pro přidání nového jména do Firestore (jen pro přihlášené)
+async function addName() {
+  if (!auth.currentUser) {
+    alert("Musíš se přihlásit!")
+    return
+  }
 
-            await addDoc(collection(db, "warriorNames"), {
-                english: englishName,
-                czech: czechName
-            });
+  const englishName = document.getElementById("newEnglish").value.trim()
+  const czechName = document.getElementById("newCzech").value.trim()
 
-            document.getElementById("newEnglish").value = "";
-            document.getElementById("newCzech").value = "";
+  if (englishName === "" || czechName === "") {
+    alert("Vyplň obě jména!")
+    return
+  }
 
-            loadNames(); // Znovu načti jména po přidání
-        }
+  await addDoc(collection(db, "warriorNames"), {
+    english: englishName,
+    czech: czechName,
+    addedBy: auth.currentUser.uid, // Uložení ID uživatele
+  })
 
-        // ✅ Připojení tlačítka k funkci
-        document.getElementById("addNameBtn").addEventListener("click", addName);
+  document.getElementById("newEnglish").value = ""
+  document.getElementById("newCzech").value = ""
 
-        // ✅ Načti jména při otevření stránky
-        window.onload = () => {
-            loadNames();
-        };
-        window.addName = addName;
+  loadNames()
+}
+
+// ✅ Funkce pro načtení jmen z Firestore
+async function loadNames() {
+  const querySnapshot = await getDocs(collection(db, "warriorNames"))
+  const names = []
+  querySnapshot.forEach((doc) => {
+    names.push(doc.data())
+  })
+  displayNames(names)
+}
+
+// ✅ Funkce pro zobrazení jmen v tabulce
+function displayNames(names) {
+  const table = document.getElementById("nameList")
+  table.innerHTML = ""
+  names.forEach((cat) => {
+    table.innerHTML += `<tr><td>${cat.english}</td><td>${cat.czech}</td></tr>`
+  })
+}
+
+// ✅ Připojení tlačítek k funkcím
+document.getElementById("loginBtn").addEventListener("click", login)
+document.getElementById("logoutBtn").addEventListener("click", logout)
+document.getElementById("addNameBtn").addEventListener("click", addName)
+
+// ✅ Načti jména při otevření stránky
+window.onload = () => {
+  loadNames()
+}
