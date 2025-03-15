@@ -1,32 +1,49 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="cs">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="keywords" content="kočičí,válečníci,warriors,cats" />
-    <title>Warriors cats</title>
-    <link rel="stylesheet" href="styles.css" />
-    <script type="module" src="script.js"></script>
-  </head>
-  <body>
-    <h1>Překlady Kočičích Válečníků</h1>
-    <button id="loginBtn">Přihlásit se</button>
-    <button id="logoutBtn" style="display: none">Odhlásit se</button>
-    <button id="addNameBtn" disabled>Přidat jméno</button>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Překlady Kočičích Válečníků</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        input, button { padding: 8px; margin: 5px; }
+        table { width: 50%; margin: auto; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 8px; }
+        #adminSection { display: none; margin-top: 20px; }
+    </style>
+</head>
+<body>
 
-    <!-- Přidávání nových jmen -->
-    <input type="text" id="newEnglish" placeholder="Anglické jméno" />
-    <input type="text" id="newCzech" placeholder="České jméno" />
+    <h1>Překlady Kočičích Válečníků</h1>
+
+    <!-- Přihlášení -->
+    <div id="loginSection">
+        <input type="password" id="password" placeholder="Zadej heslo">
+        <button onclick="login()">Přihlásit se</button>
+    </div>
+
+    <!-- Admin sekce na přidávání nových jmen -->
+    <div id="adminSection">
+        <h2>Přidat nové jméno</h2>
+        <input type="text" id="newEnglish" placeholder="Anglické jméno">
+        <input type="text" id="newCzech" placeholder="České jméno">
+        <button onclick="addName()">Přidat</button>
+        <button onclick="logout()">Odhlásit se</button>
+    </div>
+
+    <!-- Vyhledávání -->
+    <input type="text" id="searchEnglish" placeholder="Hledej anglické jméno..." onkeyup="searchNames()">
+    <input type="text" id="searchCzech" placeholder="Hledej české jméno..." onkeyup="searchNames()">
 
     <!-- Tabulka s jmény -->
     <table>
-      <thead>
-        <tr>
-          <th>Anglické jméno</th>
-          <th>České jméno</th>
-        </tr>
-      </thead>
-      <tbody id="nameList"></tbody>
+        <thead>
+            <tr>
+                <th>Anglické jméno</th>
+                <th>České jméno</th>
+            </tr>
+        </thead>
+        <tbody id="nameList"></tbody>
     </table>
-  </body>
+</body>
 </html>
