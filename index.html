@@ -1,37 +1,93 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Překlady Kočičích Válečníků</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        input { padding: 8px; width: 250px; margin: 5px; }
-        table { width: 50%; margin: auto; border-collapse: collapse; }
-        th, td { border: 1px solid black; padding: 8px; }
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+      input {
+        padding: 8px;
+        width: 250px;
+        margin: 5px;
+      }
+      table {
+        width: 50%;
+        margin: auto;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+      }
     </style>
-    <script src="script.js"></script>
-
-</head>
-<body>
-
+  </head>
+  <body>
     <h1>Překlady Kočičích Válečníků</h1>
-    
-    <input type="text" id="searchEnglish" placeholder="Hledej anglické jméno..." onkeyup="searchNames()">
-    <input type="text" id="searchCzech" placeholder="Hledej české jméno..." onkeyup="searchNames()">
-    
+
+    <input
+      type="text"
+      id="searchEnglish"
+      placeholder="Hledej anglické jméno..."
+      onkeyup="searchNames()"
+    />
+    <input
+      type="text"
+      id="searchCzech"
+      placeholder="Hledej české jméno..."
+      onkeyup="searchNames()"
+    />
+
     <table>
-        <thead>
-            <tr>
-                <th>Anglické jméno</th>
-                <th>České jméno</th>
-            </tr>
-        </thead>
-        <tbody id="nameList"></tbody>
+      <thead>
+        <tr>
+          <th>Anglické jméno</th>
+          <th>České jméno</th>
+        </tr>
+      </thead>
+      <tbody id="nameList"></tbody>
     </table>
 
-    
+    <script>
+      const names = [
+        { english: "Firestar", czech: "Ohnivous" },
+        { english: "Graystripe", czech: "Šedý proužek" },
+        { english: "Bluestar", czech: "Modrá hvězda" },
+        { english: "Sandstorm", czech: "Písečná bouře" },
+        { english: "Tigerclaw", czech: "Tygří dráp" },
+      ]
 
-</body>
+      function displayNames(filteredNames = names) {
+        const table = document.getElementById("nameList")
+        table.innerHTML = ""
+        filteredNames.forEach((cat) => {
+          table.innerHTML += `<tr><td>${cat.english}</td><td>${cat.czech}</td></tr>`
+        })
+      }
+
+      function searchNames() {
+        const queryEnglish = document
+          .getElementById("searchEnglish")
+          .value.toLowerCase()
+        const queryCzech = document
+          .getElementById("searchCzech")
+          .value.toLowerCase()
+
+        const filtered = names.filter(
+          (cat) =>
+            (cat.english.toLowerCase().includes(queryEnglish) ||
+              queryEnglish === "") &&
+            (cat.czech.toLowerCase().includes(queryCzech) || queryCzech === ""),
+        )
+
+        displayNames(filtered)
+      }
+
+      displayNames()
+    </script>
+  </body>
 </html>
-
