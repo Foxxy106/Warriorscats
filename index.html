@@ -1,93 +1,86 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="cs">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Překlady Kočičích Válečníků</title>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-      }
-      input {
-        padding: 8px;
-        width: 250px;
-        margin: 5px;
-      }
-      table {
-        width: 50%;
-        margin: auto;
-        border-collapse: collapse;
-      }
-      th,
-      td {
-        border: 1px solid black;
-        padding: 8px;
-      }
+        body { font-family: Arial, sans-serif; text-align: center; }
+        input { padding: 8px; width: 250px; margin: 5px; }
+        table { width: 70%; margin: auto; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 8px; }
     </style>
-  </head>
-  <body>
+</head>
+<body>
+
     <h1>Překlady Kočičích Válečníků</h1>
-
-    <input
-      type="text"
-      id="searchEnglish"
-      placeholder="Hledej anglické jméno..."
-      onkeyup="searchNames()"
-    />
-    <input
-      type="text"
-      id="searchCzech"
-      placeholder="Hledej české jméno..."
-      onkeyup="searchNames()"
-    />
-
+    
+    <input type="text" id="searchEnglish" placeholder="Hledej anglické jméno..." onkeyup="searchNames()">
+    <input type="text" id="searchCzech" placeholder="Hledej české jméno..." onkeyup="searchNames()">
+    
     <table>
-      <thead>
-        <tr>
-          <th>Anglické jméno</th>
-          <th>České jméno</th>
-        </tr>
-      </thead>
-      <tbody id="nameList"></tbody>
+        <thead>
+            <tr>
+                <th>Kotěcí jméno (EN)</th>
+                <th>Učednické jméno (EN)</th>
+                <th>Válečnické jméno (EN)</th>
+                <th>Velitelské jméno (EN)</th>
+                <th>Kotěcí jméno (CZ)</th>
+                <th>Učednické jméno (CZ)</th>
+                <th>Válečnické jméno (CZ)</th>
+                <th>Velitelské jméno (CZ)</th>
+            </tr>
+        </thead>
+        <tbody id="nameList"></tbody>
     </table>
 
     <script>
-      const names = [
-        { english: "Firestar", czech: "Ohnivous" },
-        { english: "Graystripe", czech: "Šedý proužek" },
-        { english: "Bluestar", czech: "Modrá hvězda" },
-        { english: "Sandstorm", czech: "Písečná bouře" },
-        { english: "Tigerclaw", czech: "Tygří dráp" },
-      ]
+        const names = [
+            { kitten: "Firekit", apprentice: "Firepaw", warrior: "Fireheart", leader: "Firestar",
+              kittenCZ: "Ohniváček", apprenticeCZ: "Ohnivý tlapka", warriorCZ: "Ohnivé srdce", leaderCZ: "Ohnivous" },
+            
+            { kitten: "Graykit", apprentice: "Graypaw", warrior: "Graystripe", leader: "Graystar",
+              kittenCZ: "Šedáček", apprenticeCZ: "Šedý tlapka", warriorCZ: "Šedý proužek", leaderCZ: "Šedočar" },
+            
+            { kitten: "Bluekit", apprentice: "Bluepaw", warrior: "Bluestar", leader: "Bluestar",
+              kittenCZ: "Modráček", apprenticeCZ: "Modrý tlapka", warriorCZ: "Modrá hvězda", leaderCZ: "Modrohvezda" },
+            
+            { kitten: "Tigerkit", apprentice: "Tigerpaw", warrior: "Tigerclaw", leader: "Tigerstar",
+              kittenCZ: "Tygříček", apprenticeCZ: "Tygří tlapka", warriorCZ: "Tygří dráp", leaderCZ: "Tygrohvězda" }
+        ];
 
-      function displayNames(filteredNames = names) {
-        const table = document.getElementById("nameList")
-        table.innerHTML = ""
-        filteredNames.forEach((cat) => {
-          table.innerHTML += `<tr><td>${cat.english}</td><td>${cat.czech}</td></tr>`
-        })
-      }
+        function displayNames(filteredNames = names) {
+            const table = document.getElementById("nameList");
+            table.innerHTML = "";
+            filteredNames.forEach(cat => {
+                table.innerHTML += `<tr>
+                    <td>${cat.kitten}</td><td>${cat.apprentice}</td><td>${cat.warrior}</td><td>${cat.leader}</td>
+                    <td>${cat.kittenCZ}</td><td>${cat.apprenticeCZ}</td><td>${cat.warriorCZ}</td><td>${cat.leaderCZ}</td>
+                </tr>`;
+            });
+        }
 
-      function searchNames() {
-        const queryEnglish = document
-          .getElementById("searchEnglish")
-          .value.toLowerCase()
-        const queryCzech = document
-          .getElementById("searchCzech")
-          .value.toLowerCase()
+        function searchNames() {
+            const queryEnglish = document.getElementById("searchEnglish").value.toLowerCase();
+            const queryCzech = document.getElementById("searchCzech").value.toLowerCase();
 
-        const filtered = names.filter(
-          (cat) =>
-            (cat.english.toLowerCase().includes(queryEnglish) ||
-              queryEnglish === "") &&
-            (cat.czech.toLowerCase().includes(queryCzech) || queryCzech === ""),
-        )
+            const filtered = names.filter(cat => 
+                (cat.kitten.toLowerCase().includes(queryEnglish) ||
+                 cat.apprentice.toLowerCase().includes(queryEnglish) ||
+                 cat.warrior.toLowerCase().includes(queryEnglish) ||
+                 cat.leader.toLowerCase().includes(queryEnglish) || queryEnglish === "") &&
 
-        displayNames(filtered)
-      }
+                (cat.kittenCZ.toLowerCase().includes(queryCzech) ||
+                 cat.apprenticeCZ.toLowerCase().includes(queryCzech) ||
+                 cat.warriorCZ.toLowerCase().includes(queryCzech) ||
+                 cat.leaderCZ.toLowerCase().includes(queryCzech) || queryCzech === "")
+            );
 
-      displayNames()
+            displayNames(filtered);
+        }
+
+        displayNames();
     </script>
-  </body>
+
+</body>
 </html>
