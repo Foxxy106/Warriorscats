@@ -1,5 +1,4 @@
-    <script type="module">
-        // ✅ Import Firebase funkcí
+// ✅ Import Firebase funkcí
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
@@ -66,4 +65,3 @@
             loadNames();
         };
         window.addName = addName;
-</script>
