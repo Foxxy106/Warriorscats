@@ -15,7 +15,12 @@
 <body>
 
     <h1>Překlady Kočičích Válečníků</h1>
-    
+    <input type="email" id="email" placeholder="E-mail">
+<input type="password" id="password" placeholder="Heslo">
+<button onclick="register()">Registrovat</button>
+<button onclick="login()">Přihlásit</button>
+<button onclick="logout()">Odhlásit</button>
+
     <input type="text" id="searchEnglish" placeholder="Hledej anglické jméno..." onkeyup="searchNames()">
     <input type="text" id="searchCzech" placeholder="Hledej české jméno..." onkeyup="searchNames()">
     
@@ -32,6 +37,28 @@
     </table>
 
     <script>
+        // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyACgG8xZvMHWFJPlo-WJwyMKDOhD4NRZQI",
+  authDomain: "warriors-cats-cz.firebaseapp.com",
+  projectId: "warriors-cats-cz",
+  storageBucket: "warriors-cats-cz.firebasestorage.app",
+  messagingSenderId: "103962692564",
+  appId: "1:103962692564:web:e72bb5d2a2309a90182441",
+  measurementId: "G-6X0J9J8PKC"
+};
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
         const names = [
             { kittenEN: "Firekit", apprenticeEN: "Firepaw", warriorEN: "Fireheart", leaderEN: "Firestar",
               kittenCZ: "Ohniváček", apprenticeCZ: "Ohnivý tlapka", warriorCZ: "Ohnivé srdce", leaderCZ: "Ohnivous" },
@@ -87,6 +114,41 @@
         }
 
         displayNames();
+    function register() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      alert("Účet vytvořen!");
+    })
+    .catch((error) => {
+      alert(error.message);
+    });
+}
+
+// Přihlášení uživatele
+function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      alert("Úspěšně přihlášen!");
+    })
+    .catch((error) => {
+      alert(error.message);
+    });
+}
+
+// Odhlášení uživatele
+function logout() {
+  signOut(auth).then(() => {
+    alert("Odhlášeno!");
+  }).catch((error) => {
+    alert(error.message);
+  });
+}
     </script>
 
 </body>
