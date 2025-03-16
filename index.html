@@ -1,155 +1,114 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Překlady Kočičích Válečníků</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        input { padding: 8px; width: 250px; margin: 5px; }
-        table { width: 80%; margin: auto; border-collapse: collapse; }
-        th, td { border: 1px solid black; padding: 8px; text-align: center; }
-        .double-row td { font-weight: bold; background-color: #f0f0f0; }
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+      input {
+        padding: 8px;
+        width: 250px;
+        margin: 5px;
+      }
+      table {
+        width: 80%;
+        margin: auto;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+      }
+      .double-row td {
+        font-weight: bold;
+        background-color: #f0f0f0;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <h1>Překlady Kočičích Válečníků</h1>
-    <input type="email" id="email" placeholder="E-mail">
-<input type="password" id="password" placeholder="Heslo">
-<button onclick="register()">Registrovat</button>
-<button onclick="login()">Přihlásit</button>
-<button onclick="logout()">Odhlásit</button>
+    <input type="email" id="email" placeholder="E-mail" />
+    <input type="password" id="password" placeholder="Heslo" />
+    <button onclick="register()">Registrovat</button>
+    <button onclick="login()">Přihlásit</button>
+    <button onclick="logout()">Odhlásit</button>
+    <input type="text" id="searchEnglish" placeholder="Hledat v angličtině" />
+    <input type="text" id="searchCzech" placeholder="Hledat v češtině" />
+    <button id="searchButton">Hledat</button>
+    <h2>Seznam válečníků</h2>
+    <ul id="warriorList"></ul>
 
-    <input type="text" id="searchEnglish" placeholder="Hledej anglické jméno..." onkeyup="searchNames()">
-    <input type="text" id="searchCzech" placeholder="Hledej české jméno..." onkeyup="searchNames()">
-    
+    <form id="addCatForm">
+      <input
+        type="text"
+        id="kittenEN"
+        placeholder="Kotěcí jméno (EN)"
+        required
+      />
+      <input
+        type="text"
+        id="apprenticeEN"
+        placeholder="Učednické jméno (EN)"
+        required
+      />
+      <input
+        type="text"
+        id="warriorEN"
+        placeholder="Válečnické jméno (EN)"
+        required
+      />
+      <input
+        type="text"
+        id="leaderEN"
+        placeholder="Velitelské jméno (EN)"
+        required
+      />
+      <input
+        type="text"
+        id="kittenCZ"
+        placeholder="Kotěcí jméno (CZ)"
+        required
+      />
+      <input
+        type="text"
+        id="apprenticeCZ"
+        placeholder="Učednické jméno (CZ)"
+        required
+      />
+      <input
+        type="text"
+        id="warriorCZ"
+        placeholder="Válečnické jméno (CZ)"
+        required
+      />
+      <input
+        type="text"
+        id="leaderCZ"
+        placeholder="Velitelské jméno (CZ)"
+        required
+      />
+      <button type="submit">Přidat kočku</button>
+    </form>
+
     <table>
-        <thead>
-            <tr>
-                <th>Kotě</th>
-                <th>Učedník</th>
-                <th>Válečník</th>
-                <th>Vůdce</th>
-            </tr>
-        </thead>
-        <tbody id="nameList"></tbody>
+      <thead>
+        <tr>
+          <th>Kotě</th>
+          <th>Učedník</th>
+          <th>Válečník</th>
+          <th>Vůdce</th>
+        </tr>
+      </thead>
+      <tbody id="nameList"></tbody>
     </table>
 
-    <script>
-        // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyACgG8xZvMHWFJPlo-WJwyMKDOhD4NRZQI",
-  authDomain: "warriors-cats-cz.firebaseapp.com",
-  projectId: "warriors-cats-cz",
-  storageBucket: "warriors-cats-cz.firebasestorage.app",
-  messagingSenderId: "103962692564",
-  appId: "1:103962692564:web:e72bb5d2a2309a90182441",
-  measurementId: "G-6X0J9J8PKC"
-};
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-        const names = [
-            { kittenEN: "Firekit", apprenticeEN: "Firepaw", warriorEN: "Fireheart", leaderEN: "Firestar",
-              kittenCZ: "Ohniváček", apprenticeCZ: "Ohnivý tlapka", warriorCZ: "Ohnivé srdce", leaderCZ: "Ohnivous" },
-
-            { kittenEN: "Graykit", apprenticeEN: "Graypaw", warriorEN: "Graystripe", leaderEN: "Graystar",
-              kittenCZ: "Šedáček", apprenticeCZ: "Šedý tlapka", warriorCZ: "Šedý proužek", leaderCZ: "Šedočar" },
-
-            { kittenEN: "Bluekit", apprenticeEN: "Bluepaw", warriorEN: "Bluestar", leaderEN: "Bluestar",
-              kittenCZ: "Modráček", apprenticeCZ: "Modrý tlapka", warriorCZ: "Modrá hvězda", leaderCZ: "Modrohvezda" },
-
-            { kittenEN: "Tigerkit", apprenticeEN: "Tigerpaw", warriorEN: "Tigerclaw", leaderEN: "Tigerstar",
-              kittenCZ: "Tygříček", apprenticeCZ: "Tygří tlapka", warriorCZ: "Tygří dráp", leaderCZ: "Tygrohvězda" }
-        ];
-
-        function displayNames(filteredNames = names) {
-            const table = document.getElementById("nameList");
-            table.innerHTML = "";
-            filteredNames.forEach(cat => {
-                table.innerHTML += `
-                    <tr class="double-row">
-                        <td>${cat.kittenEN}</td>
-                        <td>${cat.apprenticeEN}</td>
-                        <td>${cat.warriorEN}</td>
-                        <td>${cat.leaderEN}</td>
-                    </tr>
-                    <tr>
-                        <td>${cat.kittenCZ}</td>
-                        <td>${cat.apprenticeCZ}</td>
-                        <td>${cat.warriorCZ}</td>
-                        <td>${cat.leaderCZ}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function searchNames() {
-            const queryEnglish = document.getElementById("searchEnglish").value.toLowerCase();
-            const queryCzech = document.getElementById("searchCzech").value.toLowerCase();
-
-            const filtered = names.filter(cat => 
-                (cat.kittenEN.toLowerCase().includes(queryEnglish) ||
-                 cat.apprenticeEN.toLowerCase().includes(queryEnglish) ||
-                 cat.warriorEN.toLowerCase().includes(queryEnglish) ||
-                 cat.leaderEN.toLowerCase().includes(queryEnglish) || queryEnglish === "") &&
-
-                (cat.kittenCZ.toLowerCase().includes(queryCzech) ||
-                 cat.apprenticeCZ.toLowerCase().includes(queryCzech) ||
-                 cat.warriorCZ.toLowerCase().includes(queryCzech) ||
-                 cat.leaderCZ.toLowerCase().includes(queryCzech) || queryCzech === "")
-            );
-
-            displayNames(filtered);
-        }
-
-        displayNames();
-    function register() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      alert("Účet vytvořen!");
-    })
-    .catch((error) => {
-      alert(error.message);
-    });
-}
-
-// Přihlášení uživatele
-function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      alert("Úspěšně přihlášen!");
-    })
-    .catch((error) => {
-      alert(error.message);
-    });
-}
-
-// Odhlášení uživatele
-function logout() {
-  signOut(auth).then(() => {
-    alert("Odhlášeno!");
-  }).catch((error) => {
-    alert(error.message);
-  });
-}
-    </script>
-
-</body>
+    <script src="script.js" type="module"></script>
+  </body>
 </html>
+
